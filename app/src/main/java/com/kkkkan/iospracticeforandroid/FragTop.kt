@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.MainThread
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,6 +41,34 @@ class FragTop : Fragment() {
         binding.memos.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
+        binding.swipeRefresh.setOnRefreshListener {
+            refreshData()
+        }
+
+        refreshData()
+
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshData()
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        if (binding.swipeRefresh.isRefreshing) {
+            binding.swipeRefresh.isRefreshing = false
+        }
+    }
+
+    /**
+     * 新たにデータを取得しに行く。
+     * 終了後、更新中のクルクルが出ていたら消す。
+     */
+    @MainThread
+    private fun refreshData() {
         GlobalScope.launch {
             try {
                 val response = getAllData().execute()
@@ -53,9 +82,14 @@ class FragTop : Fragment() {
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
+            } finally {
+                GlobalScope.launch(Dispatchers.Main) {
+                    if (binding.swipeRefresh.isRefreshing) {
+                        binding.swipeRefresh.isRefreshing = false
+                    }
+                }
             }
         }
-        return binding.root
     }
 
 
