@@ -90,6 +90,14 @@ class FragTop : Fragment() {
             memo.contents.forEach {
                 val textView = TextView(binding.root.context).apply {
                     text = it
+                    textSize = 16f // setTextSizeはsp単位
+                    setPadding(
+                        0,
+                        4 * context.resources.displayMetrics.density.toInt(),
+                        0,
+                        4 * context.resources.displayMetrics.density.toInt()
+                    )
+
                 }
                 holder.binding.contentsContainer.addView(textView)
             }
