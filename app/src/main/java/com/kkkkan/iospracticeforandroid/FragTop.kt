@@ -26,8 +26,8 @@ class FragTop : Fragment() {
         }
     }
 
-    lateinit var binding: FragTopBinding
-    val adapter = CardAdapter()
+    private lateinit var binding: FragTopBinding
+    private val adapter = CardAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,7 +93,7 @@ class FragTop : Fragment() {
     }
 
 
-    inner class CardAdapter : RecyclerView.Adapter<CardViewHolder>() {
+    private inner class CardAdapter : RecyclerView.Adapter<CardViewHolder>() {
         private val memos: ArrayList<MemoData> = ArrayList()
         fun setData(memos: List<MemoData>?) {
             this.memos.clear()
