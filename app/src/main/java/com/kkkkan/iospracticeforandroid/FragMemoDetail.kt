@@ -16,10 +16,12 @@ import com.kkkkan.iospracticeforandroid.databinding.ViewMemoDetailItemBinding
 class FragMemoDetail : Fragment() {
     companion object {
         private const val keyMemo = "key_memo"
-        fun getNewInstance(memo: MemoData): FragMemoDetail {
+        private const val keySharedName = "key_shared_name"
+        fun getNewInstance(memo: MemoData, sharedName: String): FragMemoDetail {
             val f = FragMemoDetail()
             f.arguments = Bundle().apply {
                 putSerializable(keyMemo, memo)
+                putString(keySharedName, sharedName)
             }
             return f
         }
@@ -30,6 +32,10 @@ class FragMemoDetail : Fragment() {
 
     private fun getMemo(): MemoData {
         return arguments!!.getSerializable(keyMemo) as MemoData
+    }
+
+    private fun getKeySharedName(): String {
+        return arguments!!.getString(keySharedName, "")
     }
 
     override fun onCreateView(
@@ -52,6 +58,9 @@ class FragMemoDetail : Fragment() {
         val dividerItemDecoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
         binding.contentList.addItemDecoration(dividerItemDecoration)
         adapter.setData(memo.contents)
+        binding.root.transitionName = getKeySharedName()
+//        binding.title.transitionName = "title"
+//        binding.contentList.transitionName = "contents"
         return binding.root
     }
 

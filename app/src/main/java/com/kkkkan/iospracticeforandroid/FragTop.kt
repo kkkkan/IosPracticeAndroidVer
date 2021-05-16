@@ -1,6 +1,7 @@
 package com.kkkkan.iospracticeforandroid
 
 import android.os.Bundle
+import android.transition.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.IOException
+
 
 class FragTop : Fragment() {
     companion object {
@@ -136,13 +138,31 @@ class FragTop : Fragment() {
                 holder.binding.contentsContainer.addView(textView)
             }
             holder.binding.root.setOnClickListener {
+                val enterTs = TransitionSet()
+                enterTs.ordering = TransitionSet.ORDERING_TOGETHER
+                enterTs.addTransition(ChangeBounds())
+                val returnTs = TransitionSet()
+                enterTs.ordering = TransitionSet.ORDERING_TOGETHER
+                enterTs.addTransition(Fade())
+                val transition = TransitionSet().apply {
+                    addTransition(ChangeBounds())
+                    addTransition(ChangeTransform())
+                    addTransition(ChangeImageTransform())
+                }
+                holder.binding.root.transitionName = "sharedName"
+                holder.binding.title.transitionName = "title"
+                holder.binding.contentsContainer.transitionName = "contents"
                 fragmentManager?.beginTransaction()?.apply {
-                    val f = FragMemoDetail.getNewInstance(memo)
+                    val f = FragMemoDetail.getNewInstance(memo, "sharedName")
+                    f.sharedElementEnterTransition = transition
+                    f.sharedElementReturnTransition = transition
+                    addSharedElement(holder.binding.root, "sharedName")
+//                    addSharedElement(holder.binding.title,"title")
+//                    addSharedElement(holder.binding.contentsContainer,"contents")
                     setReorderingAllowed(true)
                     replace(R.id.fragment_container, f)
                     addToBackStack(null)
                     commit()
-
                 }
             }
             holder.binding.executePendingBindings()
