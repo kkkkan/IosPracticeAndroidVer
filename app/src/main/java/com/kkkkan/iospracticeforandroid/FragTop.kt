@@ -135,6 +135,16 @@ class FragTop : Fragment() {
                 }
                 holder.binding.contentsContainer.addView(textView)
             }
+            holder.binding.root.setOnClickListener {
+                fragmentManager?.beginTransaction()?.apply {
+                    val f = FragMemoDetail.getNewInstance(memo)
+                    setReorderingAllowed(true)
+                    replace(R.id.fragment_container, f)
+                    addToBackStack(null)
+                    commit()
+
+                }
+            }
             holder.binding.executePendingBindings()
         }
     }
